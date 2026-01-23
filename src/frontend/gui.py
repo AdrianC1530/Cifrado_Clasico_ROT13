@@ -41,11 +41,19 @@ class App(ctk.CTk):
         
         self.lbl_subtitulo = ctk.CTkLabel(
             self.frame_header, 
-            text="Seguridad Clásica con Diseño Moderno", 
+            text="Criptografía Histórica • Ingeniería Moderna", 
             font=ctk.CTkFont(family="Roboto", size=14),
             text_color="gray"
         )
         self.lbl_subtitulo.pack()
+        
+        self.lbl_integrantes = ctk.CTkLabel(
+            self.frame_header,
+            text="Desarrollado por: Mateo • Santiago • Adrián",
+            font=ctk.CTkFont(family="Roboto", size=11),
+            text_color="gray60"
+        )
+        self.lbl_integrantes.pack(pady=(2, 0))
 
         # --- Main Content Frame ---
         self.main_frame = ctk.CTkFrame(self, corner_radius=15)
