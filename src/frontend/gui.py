@@ -101,9 +101,10 @@ class App(ctk.CTk):
         self.txt_salida.configure(state="disabled")
         
     def procesar(self):
+        # 1. Capturamos el texto ingresado por el usuario
         texto = self.txt_entrada.get("1.0", "end-1c").strip()
         
-        # 1. Validación (Middleware)
+        # 2. Validación (Middleware): Validamos los datos antes de enviarlos
         es_valido, mensaje = self.validator.validar_texto(texto)
         
         if not es_valido:
@@ -112,11 +113,11 @@ class App(ctk.CTk):
             messagebox.showwarning("Advertencia", mensaje)
             return
             
-        # 2. Procesamiento (Backend)
+        # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
         # ROT13 es simétrico, el modo visual es solo para cumplir requerimientos de UI
         resultado = self.cipher.procesar(texto)
         
-        # 3. Mostrar Resultado
+        # 4. Mostrar Resultado: Mostramos el texto cifrado/descifrado en la interfaz
         self.txt_salida.configure(state="normal")
         self.txt_salida.delete("1.0", "end")
         self.txt_salida.insert("1.0", resultado)

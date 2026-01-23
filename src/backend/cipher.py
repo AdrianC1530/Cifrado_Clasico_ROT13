@@ -1,6 +1,6 @@
 class ROT13Cipher:
     """
-    Clase pura que implementa la lógica matemática del cifrado ROT13.
+    Clase que implementa la lógica matemática del cifrado ROT13.
     Utiliza aritmética modular para realizar la sustitución de caracteres.
     """
     
@@ -8,7 +8,7 @@ class ROT13Cipher:
         """
         Aplica el cifrado/descifrado ROT13 al texto de entrada.
         Al ser ROT13 un cifrado involutivo, este mismo método sirve para
-        cifrar y descifrar.
+        cifrar y descifrar (el proceso es idéntico).
         
         Args:
             texto (str): El texto a procesar.
@@ -19,7 +19,8 @@ class ROT13Cipher:
         resultado = []
         for caracter in texto:
             if 'a' <= caracter <= 'z':
-                # (x + 13) mod 26
+                # (x + 13) mod 26: Aplicamos módulo 26 para que el alfabeto sea circular
+                # Cuando llegamos a la Z, volvemos a la A
                 nuevo_caracter = chr(((ord(caracter) - ord('a') + 13) % 26) + ord('a'))
                 resultado.append(nuevo_caracter)
             elif 'A' <= caracter <= 'Z':

@@ -16,6 +16,7 @@ class Validator:
             tuple[bool, str]: (Es válido, Mensaje de error si aplica)
         """
         if not texto:
+            # Validamos que el dato no sea vacío
             return False, "El campo de texto no puede estar vacío."
         
         if not isinstance(texto, str):
