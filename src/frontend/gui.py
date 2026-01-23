@@ -1,60 +1,96 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import messagebox
 from src.backend.cipher import ROT13Cipher
 from src.middleware.validator import Validator
 
-class App(tk.Tk):
+# Configuración inicial de CustomTkinter
+ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+ctk.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
+class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        
+        # Configuración de la ventana principal
         self.title("Suite de Cifrado Clásico - ROT13")
-        self.geometry("600x450")
+        self.geometry("700x550")
         self.resizable(False, False)
         
-        # Inicializar componentes
+        # Inicializar lógica
         self.cipher = ROT13Cipher()
         self.validator = Validator()
+        
+        # Grid layout configuration
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=0) # Título
+        self.grid_rowconfigure(1, weight=1) # Contenido
         
         self.crear_interfaz()
         
     def crear_interfaz(self):
-        # Título
-        lbl_titulo = tk.Label(self, text="Cifrado ROT13", font=("Helvetica", 16, "bold"))
-        lbl_titulo.pack(pady=20)
+        # --- Header ---
+        self.frame_header = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.frame_header.grid(row=0, column=0, sticky="ew", pady=(20, 10))
         
-        # Frame principal
-        main_frame = tk.Frame(self)
-        main_frame.pack(padx=20, pady=10, fill="both", expand=True)
+        self.lbl_titulo = ctk.CTkLabel(
+            self.frame_header, 
+            text="🔐 Cifrado ROT13", 
+            font=ctk.CTkFont(family="Roboto", size=24, weight="bold")
+        )
+        self.lbl_titulo.pack()
+        
+        self.lbl_subtitulo = ctk.CTkLabel(
+            self.frame_header, 
+            text="Seguridad Clásica con Diseño Moderno", 
+            font=ctk.CTkFont(family="Roboto", size=14),
+            text_color="gray"
+        )
+        self.lbl_subtitulo.pack()
+
+        # --- Main Content Frame ---
+        self.main_frame = ctk.CTkFrame(self, corner_radius=15)
+        self.main_frame.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
+        self.main_frame.grid_columnconfigure(0, weight=1)
         
         # Entrada
-        lbl_entrada = tk.Label(main_frame, text="Texto de Entrada:", font=("Arial", 10))
-        lbl_entrada.pack(anchor="w")
+        self.lbl_entrada = ctk.CTkLabel(self.main_frame, text="Texto de Entrada:", font=ctk.CTkFont(size=14, weight="bold"))
+        self.lbl_entrada.grid(row=0, column=0, sticky="w", padx=20, pady=(20, 5))
         
-        self.txt_entrada = tk.Text(main_frame, height=5, font=("Consolas", 10))
-        self.txt_entrada.pack(fill="x", pady=(5, 15))
+        self.txt_entrada = ctk.CTkTextbox(self.main_frame, height=100, corner_radius=10)
+        self.txt_entrada.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 15))
         
-        # Opciones (Radio Buttons)
-        # Aunque ROT13 es involutivo, agregamos los controles como pide el requerimiento
-        self.opcion_var = tk.StringVar(value="Cifrar")
+        # Controles (Modo de operación)
+        self.lbl_modo = ctk.CTkLabel(self.main_frame, text="Modo de Operación:", font=ctk.CTkFont(size=14, weight="bold"))
+        self.lbl_modo.grid(row=2, column=0, sticky="w", padx=20, pady=(0, 5))
         
-        frame_opciones = tk.Frame(main_frame)
-        frame_opciones.pack(fill="x", pady=5)
-        
-        rb_cifrar = tk.Radiobutton(frame_opciones, text="Cifrar", variable=self.opcion_var, value="Cifrar", font=("Arial", 10))
-        rb_cifrar.pack(side="left", padx=20)
-        
-        rb_descifrar = tk.Radiobutton(frame_opciones, text="Descifrar", variable=self.opcion_var, value="Descifrar", font=("Arial", 10))
-        rb_descifrar.pack(side="left", padx=20)
-        
+        # Usamos SegmentedButton para un look más moderno que los RadioButtons
+        self.modo_var = ctk.StringVar(value="Cifrar")
+        self.seg_button = ctk.CTkSegmentedButton(
+            self.main_frame, 
+            values=["Cifrar", "Descifrar"],
+            variable=self.modo_var,
+            font=ctk.CTkFont(size=13, weight="bold")
+        )
+        self.seg_button.grid(row=3, column=0, sticky="ew", padx=20, pady=(0, 20))
+
         # Botón de Acción
-        btn_procesar = tk.Button(main_frame, text="Procesar Texto", command=self.procesar, bg="#007bff", fg="white", font=("Arial", 10, "bold"), padx=10, pady=5)
-        btn_procesar.pack(pady=15)
+        self.btn_procesar = ctk.CTkButton(
+            self.main_frame, 
+            text="Ejecutar Procesamiento", 
+            command=self.procesar,
+            height=40,
+            font=ctk.CTkFont(size=15, weight="bold"),
+            corner_radius=20
+        )
+        self.btn_procesar.grid(row=4, column=0, sticky="ew", padx=20, pady=(0, 20))
         
         # Salida
-        lbl_salida = tk.Label(main_frame, text="Resultado:", font=("Arial", 10))
-        lbl_salida.pack(anchor="w")
+        self.lbl_salida = ctk.CTkLabel(self.main_frame, text="Resultado:", font=ctk.CTkFont(size=14, weight="bold"))
+        self.lbl_salida.grid(row=5, column=0, sticky="w", padx=20, pady=(0, 5))
         
-        self.txt_salida = tk.Text(main_frame, height=5, font=("Consolas", 10), state="disabled")
-        self.txt_salida.pack(fill="x", pady=(5, 0))
+        self.txt_salida = ctk.CTkTextbox(self.main_frame, height=100, corner_radius=10, fg_color=("gray90", "gray20"))
+        self.txt_salida.grid(row=6, column=0, sticky="ew", padx=20, pady=(0, 20))
+        self.txt_salida.configure(state="disabled")
         
     def procesar(self):
         texto = self.txt_entrada.get("1.0", "end-1c").strip()
@@ -63,18 +99,20 @@ class App(tk.Tk):
         es_valido, mensaje = self.validator.validar_texto(texto)
         
         if not es_valido:
+            # Usamos un messagebox estándar de tkinter ya que CTk no tiene uno nativo simple aún,
+            # o podríamos crear un Toplevel personalizado, pero esto es funcional.
             messagebox.showwarning("Advertencia", mensaje)
             return
             
         # 2. Procesamiento (Backend)
-        # ROT13 es simétrico, pero podríamos agregar lógica diferente si fuera otro cifrado
+        # ROT13 es simétrico, el modo visual es solo para cumplir requerimientos de UI
         resultado = self.cipher.procesar(texto)
         
         # 3. Mostrar Resultado
-        self.txt_salida.config(state="normal")
+        self.txt_salida.configure(state="normal")
         self.txt_salida.delete("1.0", "end")
         self.txt_salida.insert("1.0", resultado)
-        self.txt_salida.config(state="disabled")
+        self.txt_salida.configure(state="disabled")
 
 if __name__ == "__main__":
     app = App()
