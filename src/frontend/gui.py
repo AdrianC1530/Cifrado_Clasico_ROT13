@@ -114,8 +114,12 @@ class App(ctk.CTk):
             return
             
         # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
-        # ROT13 es simétrico, el modo visual es solo para cumplir requerimientos de UI
-        resultado = self.cipher.procesar(texto)
+        # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
+        modo = self.modo_var.get()
+        if modo == "Cifrar":
+            resultado = self.cipher.encrypt(texto)
+        else:
+            resultado = self.cipher.decrypt(texto)
         
         # 4. Mostrar Resultado: Mostramos el texto cifrado/descifrado en la interfaz
         self.txt_salida.configure(state="normal")

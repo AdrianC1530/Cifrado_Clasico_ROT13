@@ -4,17 +4,10 @@ class ROT13Cipher:
     Utiliza aritmética modular para realizar la sustitución de caracteres.
     """
     
-    def procesar(self, texto: str) -> str:
+    def encrypt(self, texto: str) -> str:
         """
-        Aplica el cifrado/descifrado ROT13 al texto de entrada.
-        Al ser ROT13 un cifrado involutivo, este mismo método sirve para
-        cifrar y descifrar (el proceso es idéntico).
-        
-        Args:
-            texto (str): El texto a procesar.
-            
-        Returns:
-            str: El texto resultante.
+        Se encarga de cifrar el texto recorriendo cada carácter y aplicando
+        la rotación de 13 posiciones.
         """
         resultado = []
         for caracter in texto:
@@ -32,3 +25,9 @@ class ROT13Cipher:
                 resultado.append(caracter)
         
         return "".join(resultado)
+
+    def decrypt(self, texto: str) -> str:
+        """
+        Aplica la misma lógica, porque ROT13 es un algoritmo involutivo.
+        """
+        return self.encrypt(texto)
