@@ -101,31 +101,32 @@ class App(ctk.CTk):
         self.txt_salida.configure(state="disabled")
         
     def procesar(self):
-        # 1. Capturamos el texto ingresado por el usuario
-        texto = self.txt_entrada.get("1.0", "end-1c").strip()
-        
-        # 2. Validación (Middleware): Validamos los datos antes de enviarlos
-        es_valido, mensaje = self.validator.validar_texto(texto)
-        
-        if not es_valido:
-            # Usamos un messagebox estándar de tkinter ya que CTk no tiene uno nativo simple aún,
-            # o podríamos crear un Toplevel personalizado, pero esto es funcional.
-            messagebox.showwarning("Advertencia", mensaje)
-            return
+        try:
+            # 1. Capturamos el texto ingresado por el usuario
+            texto = self.txt_entrada.get("1.0", "end-1c").strip()
             
-        # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
-        # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
-        modo = self.modo_var.get()
-        if modo == "Cifrar":
-            resultado = self.cipher.encrypt(texto)
-        else:
-            resultado = self.cipher.decrypt(texto)
-        
-        # 4. Mostrar Resultado: Mostramos el texto cifrado/descifrado en la interfaz
-        self.txt_salida.configure(state="normal")
-        self.txt_salida.delete("1.0", "end")
-        self.txt_salida.insert("1.0", resultado)
-        self.txt_salida.configure(state="disabled")
+            # 2. Validación (Middleware): Validamos los datos antes de enviarlos
+            # Si hay un error, el Validator lanzará una excepción (ValueError)
+            self.validator.validar_texto(texto)
+            
+            # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
+            modo = self.modo_var.get()
+            if modo == "Cifrar":
+                resultado = self.cipher.encrypt(texto)
+            else:
+                resultado = self.cipher.decrypt(texto)
+            
+            # 4. Mostrar Resultado: Mostramos el texto cifrado/descifrado en la interfaz
+            self.txt_salida.configure(state="normal")
+            self.txt_salida.delete("1.0", "end")
+            self.txt_salida.insert("1.0", resultado)
+            self.txt_salida.configure(state="disabled")
+            
+        except ValueError as error:
+            # Manejo de errores: Capturamos la excepción y mostramos el mensaje
+            messagebox.showwarning("Advertencia", str(error))
+        except Exception as e:
+            messagebox.showerror("Error Crítico", f"Ocurrió un error inesperado: {e}")
 
 if __name__ == "__main__":
     app = App()

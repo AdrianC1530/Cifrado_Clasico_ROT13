@@ -17,12 +17,10 @@ class Validator:
         """
         if not texto:
             # Validamos que el dato no sea vacío
-            return False, "El campo de texto no puede estar vacío."
+            raise ValueError("El campo de texto no puede estar vacío.")
         
         if not isinstance(texto, str):
-            return False, "La entrada debe ser texto."
+            raise ValueError("La entrada debe ser texto.")
             
         # Aquí se podrían agregar más validaciones si fuera necesario
         # Por ejemplo, limitar la longitud, prohibir ciertos caracteres, etc.
-        
-        return True, ""
