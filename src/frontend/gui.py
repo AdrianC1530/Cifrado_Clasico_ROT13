@@ -106,8 +106,9 @@ class App(ctk.CTk):
             texto = self.txt_entrada.get("1.0", "end-1c").strip()
             
             # 2. Validación (Middleware): Validamos los datos antes de enviarlos
-            # Si hay un error, el Validator lanzará una excepción (ValueError)
-            self.validator.validar_texto(texto)
+            # El Validator maneja los errores y muestra el popup si es necesario
+            if not self.validator.validar_texto(texto):
+                return
             
             # 3. Procesamiento (Backend): Enviamos el texto al backend para cifrar/descifrar
             modo = self.modo_var.get()
@@ -122,9 +123,6 @@ class App(ctk.CTk):
             self.txt_salida.insert("1.0", resultado)
             self.txt_salida.configure(state="disabled")
             
-        except ValueError as error:
-            # Manejo de errores: Capturamos la excepción y mostramos el mensaje
-            messagebox.showwarning("Advertencia", str(error))
         except Exception as e:
             messagebox.showerror("Error Crítico", f"Ocurrió un error inesperado: {e}")
 

@@ -1,3 +1,5 @@
+from tkinter import messagebox
+
 class Validator:
     """
     Capa de Middleware para validar las entradas del usuario antes de
@@ -5,22 +7,31 @@ class Validator:
     """
     
     @staticmethod
-    def validar_texto(texto: str) -> tuple[bool, str]:
+    def validar_texto(texto: str) -> bool:
         """
         Valida que el texto no esté vacío y cumpla con requisitos básicos.
+        Si hay un error, muestra un popup y retorna False.
         
         Args:
             texto (str): El texto a validar.
             
         Returns:
-            tuple[bool, str]: (Es válido, Mensaje de error si aplica)
+            bool: True si es válido, False si hay error.
         """
-        if not texto:
-            # Validamos que el dato no sea vacío
-            raise ValueError("El campo de texto no puede estar vacío.")
-        
-        if not isinstance(texto, str):
-            raise ValueError("La entrada debe ser texto.")
+        try:
+            if not texto:
+                # Validamos que el dato no sea vacío
+                raise ValueError("El campo de texto no puede estar vacío.")
             
-        # Aquí se podrían agregar más validaciones si fuera necesario
-        # Por ejemplo, limitar la longitud, prohibir ciertos caracteres, etc.
+            if not isinstance(texto, str):
+                raise ValueError("La entrada debe ser texto.")
+                
+            # Aquí se podrían agregar más validaciones si fuera necesario
+            return True
+
+        except ValueError as e:
+            messagebox.showwarning("Advertencia", str(e))
+            return False
+        except Exception as e:
+            messagebox.showerror("Error", f"Error inesperado en validación: {e}")
+            return False
