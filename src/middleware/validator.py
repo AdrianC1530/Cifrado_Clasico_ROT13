@@ -1,4 +1,5 @@
 from tkinter import messagebox
+import re
 
 class Validator:
     """
@@ -26,7 +27,11 @@ class Validator:
             if not isinstance(texto, str):
                 raise ValueError("La entrada debe ser texto.")
                 
-            # Aquí se podrían agregar más validaciones si fuera necesario
+            # Validamos que no contenga caracteres especiales ni números
+            # Permitimos solo letras (a-z, A-Z) y espacios
+            if not re.match(r"^[a-zA-Z\s]+$", texto):
+                raise ValueError("El texto no debe contener caracteres especiales ni números.")
+                
             return True
 
         except ValueError as e:

@@ -13,7 +13,7 @@ class App(ctk.CTk):
         
         # Configuración de la ventana principal
         self.title("Suite de Cifrado Clásico - ROT13")
-        self.geometry("700x550")
+        self.geometry("1080x720")
         self.resizable(False, False)
         
         # Inicializar lógica
